@@ -5,6 +5,7 @@ import java.util.Comparator;
 import java.util.List;
 
 import javax.swing.JLabel;
+import javax.swing.tree.TreePath;
 
 import org.jdesktop.swingx.treetable.AbstractTreeTableModel;
 
@@ -18,6 +19,7 @@ public class DiskTreeTable extends AbstractTreeTableModel {
 	
 	public void scanDir(String dir)
 	{
+		this.treePath = new TreePath(dir);
 		this.modelSupport.fireTreeStructureChanged(null);
 		totalSize = 0;
 		myroot.getChildren().clear();
@@ -31,12 +33,13 @@ public class DiskTreeTable extends AbstractTreeTableModel {
 			return;
 		}
 		this.volumePanel.setText("Scanned volume: " + humanReadableSize(totalSize));
-		this.modelSupport.fireTreeStructureChanged(null);
+		this.modelSupport.fireTreeStructureChanged(this.treePath);
 	}
 
 	long totalSize = 0;
-	
 	int counter = 0;
+	
+	TreePath treePath = null;
 	
 	public class NodeComparator implements Comparator<MyTreeNode> {
 		@Override
@@ -73,19 +76,7 @@ public class DiskTreeTable extends AbstractTreeTableModel {
 			}
 			
 			Collections.sort(treeNode.getChildren(), new NodeComparator());
-			
-			/*
-			
-			treeNode.getChildren().sort(new Comparator<MyTreeNode>() {
 
-				@Override
-				public int compare(MyTreeNode o1, MyTreeNode o2) {
-					if (o1.getSize() > o2.getSize() ) return -1;
-					if (o1.getSize() < o2.getSize() ) return 1;
-					return 0;
-				}
-			});
-			*/
 			return total_size;
 		}
 		else 
