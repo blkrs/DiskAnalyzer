@@ -1,5 +1,6 @@
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
@@ -37,6 +38,15 @@ public class DiskTreeTable extends AbstractTreeTableModel {
 	
 	int counter = 0;
 	
+	public class NodeComparator implements Comparator<MyTreeNode> {
+		@Override
+		public int compare(MyTreeNode o1, MyTreeNode o2) {
+			if (o1.getSize() > o2.getSize() ) return -1;
+			if (o1.getSize() < o2.getSize() ) return 1;
+			return 0;
+		}
+	}
+	
 	public long displayIt(File file, MyTreeNode treeNode) {
 
 		System.out.println(file.getAbsoluteFile());
@@ -62,6 +72,10 @@ public class DiskTreeTable extends AbstractTreeTableModel {
 				total_size += my_size;
 			}
 			
+			Collections.sort(treeNode.getChildren(), new NodeComparator());
+			
+			/*
+			
 			treeNode.getChildren().sort(new Comparator<MyTreeNode>() {
 
 				@Override
@@ -71,6 +85,7 @@ public class DiskTreeTable extends AbstractTreeTableModel {
 					return 0;
 				}
 			});
+			*/
 			return total_size;
 		}
 		else 
