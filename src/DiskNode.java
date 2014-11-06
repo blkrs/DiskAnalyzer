@@ -1,17 +1,17 @@
 import java.util.ArrayList;
 import java.util.List;
 
-class MyTreeNode {
+class DiskNode {
 	private String name;
 	private String description;
-	private List<MyTreeNode> children = new ArrayList<MyTreeNode>();
+	private List<DiskNode> children = new ArrayList<DiskNode>();
 	
 	private long size;
 
-	public MyTreeNode() {
+	public DiskNode() {
 	}
 
-	public MyTreeNode(String name, String description) {
+	public DiskNode(String name, String description) {
 		this.name = name;
 		this.description = description;
 	}
@@ -32,7 +32,7 @@ class MyTreeNode {
 		this.description = description;
 	}
 
-	public List<MyTreeNode> getChildren() {
+	public List<DiskNode> getChildren() {
 		return children;
 	}
 
