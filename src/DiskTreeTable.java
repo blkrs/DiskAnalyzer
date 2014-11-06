@@ -19,7 +19,7 @@ public class DiskTreeTable extends AbstractTreeTableModel {
 	
 	public void scanDir(String dir)
 	{
-		this.treePath = new TreePath(dir);
+		this.treePath = new TreePath(myroot);
 		this.modelSupport.fireTreeStructureChanged(null);
 		totalSize = 0;
 		myroot.getChildren().clear();
@@ -33,7 +33,13 @@ public class DiskTreeTable extends AbstractTreeTableModel {
 			return;
 		}
 		this.volumePanel.setText("Scanned volume: " + DiskSizeUtil.humanReadableSize(totalSize));
+		
+		try {
 		this.modelSupport.fireTreeStructureChanged(this.treePath);
+		}
+		catch (ArrayIndexOutOfBoundsException e){
+			
+		}
 	}
 
 	long totalSize = 0;
