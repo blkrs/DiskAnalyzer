@@ -23,7 +23,7 @@ public class DiskTreeTable extends AbstractTreeTableModel {
 		this.modelSupport.fireTreeStructureChanged(null);
 		totalSize = 0;
 		myroot.getChildren().clear();
-		displayIt(new File(dir), myroot);
+		recursiveScan(new File(dir), myroot);
 		refreshStatus();
 	}
 
@@ -32,7 +32,7 @@ public class DiskTreeTable extends AbstractTreeTableModel {
 			System.out.println("Volume panel is empty");
 			return;
 		}
-		this.volumePanel.setText("Scanned volume: " + humanReadableSize(totalSize));
+		this.volumePanel.setText("Scanned volume: " + DiskSizeUtil.humanReadableSize(totalSize));
 		this.modelSupport.fireTreeStructureChanged(this.treePath);
 	}
 
@@ -50,7 +50,7 @@ public class DiskTreeTable extends AbstractTreeTableModel {
 		}
 	}
 	
-	public long displayIt(File file, MyTreeNode treeNode) {
+	public long recursiveScan(File file, MyTreeNode treeNode) {
 
 		System.out.println(file.getAbsoluteFile());
 		
@@ -69,8 +69,8 @@ public class DiskTreeTable extends AbstractTreeTableModel {
 			for (String filename : subDirs) {
 				MyTreeNode newNode = new MyTreeNode(filename,"");
 				treeNode.getChildren().add(newNode);
-				long my_size = displayIt(new File(file, filename), newNode);
-				newNode.setDescription(humanReadableSize(my_size));
+				long my_size = recursiveScan(new File(file, filename), newNode);
+				newNode.setDescription(DiskSizeUtil.humanReadableSize(my_size));
 				newNode.setSize(my_size);
 				total_size += my_size;
 			}
@@ -86,34 +86,7 @@ public class DiskTreeTable extends AbstractTreeTableModel {
 			}
 	}
 	
-	static long kilo = 1024;
-	static long mega = kilo*kilo;
-	static long giga = mega * kilo;
-	static long tera = giga * kilo;
-
-	private String humanReadableSize(long my_size) {
-		String txt = "";
-		
-		
-		if (my_size < kilo)
-		{
-			txt = my_size + " bytes";
-		} else if (my_size < mega)
-		{
-			txt = (long)(my_size/kilo) + "KB"; 
-		}else if (my_size < giga)
-		{
-			txt = (long)(my_size/mega) + "MB"; 
-		}else if (my_size < tera)
-		{
-			txt = (long)(my_size/giga) + "GB"; 
-		}else 
-		{
-			txt = (long)(my_size/tera) + "TB"; 
-		}
-			
-		return txt;
-	}
+	
 
 	@Override
 	public int getColumnCount() {
@@ -194,50 +167,4 @@ public class DiskTreeTable extends AbstractTreeTableModel {
 	}
 }
 
-class MyTreeNode {
-	private String name;
-	private String description;
-	private List<MyTreeNode> children = new ArrayList<MyTreeNode>();
-	
-	private long size;
 
-	public MyTreeNode() {
-	}
-
-	public MyTreeNode(String name, String description) {
-		this.name = name;
-		this.description = description;
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	public String getDescription() {
-		return description;
-	}
-
-	public void setDescription(String description) {
-		this.description = description;
-	}
-
-	public List<MyTreeNode> getChildren() {
-		return children;
-	}
-
-	public String toString() {
-		return "MyTreeNode: " + name + ", " + description;
-	}
-
-	public long getSize() {
-		return size;
-	}
-
-	public void setSize(long size) {
-		this.size = size;
-	}
-}
