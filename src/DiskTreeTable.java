@@ -117,7 +117,7 @@ public class DiskTreeTable extends AbstractTreeTableModel {
 		case 1:
 			return "Size";
 		case 2:
-			return "Subfolders";
+			return "Children";
 		default:
 			return "Unknown";
 		}

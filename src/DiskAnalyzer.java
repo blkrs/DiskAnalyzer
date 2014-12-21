@@ -41,7 +41,7 @@ public class DiskAnalyzer extends JFrame
 	
 	private JButton scanButton = new JButton("Scan");
 	
-	private JButton selectButton = new JButton("Select folder");
+	private JButton selectButton = new JButton("Choose folder");
 	
 	private JTextField dirNameField = new JTextField("C:\\");
 	
