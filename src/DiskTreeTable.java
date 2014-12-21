@@ -10,24 +10,20 @@ import javax.swing.tree.TreePath;
 import org.jdesktop.swingx.treetable.AbstractTreeTableModel;
 
 public class DiskTreeTable extends AbstractTreeTableModel {
-	private MyTreeNode myroot;
+	private DiskNode myroot;
 	private JLabel volumePanel;
 
 	public DiskTreeTable() {
-		myroot = new MyTreeNode("root", "Root of the tree");
+		myroot = new DiskNode("root", "Root of the tree");
 	}
 	
 	public void scanDir(String dir)
 	{
-		this.treePath = new TreePath(dir);
-		
-		//this.modelSupport.fireTreeNodesRemoved();
-		
-		
-		
+		this.treePath = new TreePath(myroot);
+		this.modelSupport.fireTreeStructureChanged(null);
 		totalSize = 0;
 		myroot.getChildren().clear();
-		displayIt(new File(dir), myroot);
+		recursiveScan(new File(dir), myroot);
 		refreshStatus();
 	}
 
@@ -36,13 +32,13 @@ public class DiskTreeTable extends AbstractTreeTableModel {
 			System.out.println("Volume panel is empty");
 			return;
 		}
-		this.volumePanel.setText("Scanned volume: " + humanReadableSize(totalSize));
+		this.volumePanel.setText("Scanned volume: " + DiskSizeUtil.humanReadableSize(totalSize));
+		
 		try {
 		this.modelSupport.fireTreeStructureChanged(this.treePath);
 		}
-		catch (Exception e)
-		{
-			System.out.println("Exception");
+		catch (ArrayIndexOutOfBoundsException e){
+			
 		}
 	}
 
@@ -51,16 +47,16 @@ public class DiskTreeTable extends AbstractTreeTableModel {
 	
 	TreePath treePath = null;
 	
-	public class NodeComparator implements Comparator<MyTreeNode> {
+	public class NodeComparator implements Comparator<DiskNode> {
 		@Override
-		public int compare(MyTreeNode o1, MyTreeNode o2) {
+		public int compare(DiskNode o1, DiskNode o2) {
 			if (o1.getSize() > o2.getSize() ) return -1;
 			if (o1.getSize() < o2.getSize() ) return 1;
 			return 0;
 		}
 	}
 	
-	public long displayIt(File file, MyTreeNode treeNode) {
+	public long recursiveScan(File file, DiskNode treeNode) {
 
 		System.out.println(file.getAbsoluteFile());
 		
@@ -77,13 +73,11 @@ public class DiskTreeTable extends AbstractTreeTableModel {
 			String[] subDirs = file.list();
 			if (subDirs == null){ return total_size; };
 			for (String filename : subDirs) {
-				MyTreeNode newNode = new MyTreeNode(filename,"");
+				DiskNode newNode = new DiskNode(filename,"");
 				treeNode.getChildren().add(newNode);
-				long my_size = displayIt(new File(file, filename), newNode);
-				
-				newNode.setDescription(humanReadableSize(my_size));
+				long my_size = recursiveScan(new File(file, filename), newNode);
+				newNode.setDescription(DiskSizeUtil.humanReadableSize(my_size));
 				newNode.setSize(my_size);
-				
 				total_size += my_size;
 			}
 			
@@ -98,34 +92,7 @@ public class DiskTreeTable extends AbstractTreeTableModel {
 			}
 	}
 	
-	static long kilo = 1024;
-	static long mega = kilo*kilo;
-	static long giga = mega * kilo;
-	static long tera = giga * kilo;
-
-	private String humanReadableSize(long my_size) {
-		String txt = "";
-		
-		
-		if (my_size < kilo)
-		{
-			txt = my_size + " bytes";
-		} else if (my_size < mega)
-		{
-			txt = (long)(my_size/kilo) + "KB"; 
-		}else if (my_size < giga)
-		{
-			txt = (long)(my_size/mega) + "MB"; 
-		}else if (my_size < tera)
-		{
-			txt = (long)(my_size/giga) + "GB"; 
-		}else 
-		{
-			txt = (long)(my_size/tera) + "TB"; 
-		}
-			
-		return txt;
-	}
+	
 
 	@Override
 	public int getColumnCount() {
@@ -149,7 +116,7 @@ public class DiskTreeTable extends AbstractTreeTableModel {
 	@Override
 	public Object getValueAt(Object node, int column) {
 		
-		MyTreeNode treenode = (MyTreeNode) node;
+		DiskNode treenode = (DiskNode) node;
 		switch (column) {
 		case 0:
 			return treenode.getName();
@@ -164,19 +131,19 @@ public class DiskTreeTable extends AbstractTreeTableModel {
 
 	@Override
 	public Object getChild(Object node, int index) {
-		MyTreeNode treenode = (MyTreeNode) node;
+		DiskNode treenode = (DiskNode) node;
 		return treenode.getChildren().get(index);
 	}
 
 	@Override
 	public int getChildCount(Object parent) {
-		MyTreeNode treenode = (MyTreeNode) parent;
+		DiskNode treenode = (DiskNode) parent;
 		return treenode.getChildren().size();
 	}
 
 	@Override
 	public int getIndexOfChild(Object parent, Object child) {
-		MyTreeNode treenode = (MyTreeNode) parent;
+		DiskNode treenode = (DiskNode) parent;
 		for (int i = 0; i > treenode.getChildren().size(); i++) {
 			if (treenode.getChildren().get(i) == child) {
 				return i;
@@ -188,7 +155,7 @@ public class DiskTreeTable extends AbstractTreeTableModel {
 	}
 
 	public boolean isLeaf(Object node) {
-		MyTreeNode treenode = (MyTreeNode) node;
+		DiskNode treenode = (DiskNode) node;
 		if (treenode.getChildren().size() > 0) {
 			return false;
 		}
@@ -206,50 +173,4 @@ public class DiskTreeTable extends AbstractTreeTableModel {
 	}
 }
 
-class MyTreeNode {
-	private String name;
-	private String description;
-	private List<MyTreeNode> children = new ArrayList<MyTreeNode>();
-	
-	private long size;
 
-	public MyTreeNode() {
-	}
-
-	public MyTreeNode(String name, String description) {
-		this.name = name;
-		this.description = description;
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	public String getDescription() {
-		return description;
-	}
-
-	public void setDescription(String description) {
-		this.description = description;
-	}
-
-	public List<MyTreeNode> getChildren() {
-		return children;
-	}
-
-	public String toString() {
-		return "MyTreeNode: " + name + ", " + description;
-	}
-
-	public long getSize() {
-		return size;
-	}
-
-	public void setSize(long size) {
-		this.size = size;
-	}
-}

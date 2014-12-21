@@ -6,6 +6,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -66,6 +67,8 @@ public class DiskAnalyzer extends JFrame
 		treeTablePanel.add( new JScrollPane( treeTable ) );
 		
 		tabs.addTab( "Folder tree", treeTablePanel );
+		
+		header.add(new JFileChooser(), FlowLayout.LEFT);
 		
 		header.add(scanButton,FlowLayout.LEFT);		
 		header.add(dirNameField,FlowLayout.LEFT);
