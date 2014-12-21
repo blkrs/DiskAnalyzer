@@ -17,14 +17,22 @@ public class DiskTreeTable extends AbstractTreeTableModel {
 		myroot = new DiskNode("root", "Root of the tree");
 	}
 	
+	private boolean scanning = false;
+	
 	public void scanDir(String dir)
 	{
+		scanning = true;
 		this.treePath = new TreePath(myroot);
 		this.modelSupport.fireTreeStructureChanged(null);
 		totalSize = 0;
 		myroot.getChildren().clear();
 		recursiveScan(new File(dir), myroot);
 		refreshStatus();
+	}
+	
+	public void stopScanning()
+	{
+		scanning  = false;
 	}
 
 	private void refreshStatus() {
@@ -57,6 +65,8 @@ public class DiskTreeTable extends AbstractTreeTableModel {
 	}
 	
 	public long recursiveScan(File file, DiskNode treeNode) {
+		
+		if (!scanning) return 0;
 
 		System.out.println(file.getAbsoluteFile());
 		

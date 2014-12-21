@@ -1,10 +1,13 @@
 import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
@@ -38,6 +41,8 @@ public class DiskAnalyzer extends JFrame
 	
 	private JButton scanButton = new JButton("Scan");
 	
+	private JButton selectButton = new JButton("Select folder");
+	
 	private JTextField dirNameField = new JTextField("C:\\");
 	
 	private JLabel scannedVolume = new JLabel("");
@@ -46,32 +51,77 @@ public class DiskAnalyzer extends JFrame
 	
 	JPanel treeTablePanel = new JPanel( new BorderLayout() );
 	
+	private boolean inProgress = false;
+	
+	JPanel header = null;
+	
+	JLabel progressLbl = null;
+	
 	public class ScanThread extends Thread {
 
 	    public void run() {
+	    	
+	    	scanButton.setText("Stop");
+	    	inProgress = true;
+	    	
+	    	showProgressGif();
+	    	
 	    	diskTreeTable.scanDir(dirNameField.getText());
+	    	
+	    	inProgress = false;
+	    	
 	    	treeTablePanel.repaint();
 	    	treeTable.repaint();
 	    	split.repaint();
+	    	
+	    	disableProgressGif();
+	    	
+	    	scanButton.setText("Scan");
 	    }
 	}
 	
+	public Component getComponent()
+	{
+		return this;
+	}
 	
+	
+	public void disableProgressGif() {
+		header.remove(progressLbl);
+	}
+
+
+	public void showProgressGif() {
+		
+		header.add(progressLbl, FlowLayout.RIGHT); 		
+	}
+
+
 	public DiskAnalyzer()
 	{
 		super( "Disk space analyzer" );
 		
-		JPanel header = new JPanel(new FlowLayout());
+		
+		
+		header = new JPanel(new FlowLayout());
+		
+		ImageUtils imgUtils = new ImageUtils();
+		ImageIcon progressIcon = imgUtils.createImageIcon("scan_in_progress.gif","Disk scan in progress");
+		
+		progressLbl = new JLabel(progressIcon);
+		
 		
 		// Build the tree table panel
 		treeTablePanel.add( new JScrollPane( treeTable ) );
 		
 		tabs.addTab( "Folder tree", treeTablePanel );
 		
-		header.add(new JFileChooser(), FlowLayout.LEFT);
+		
 		
 		header.add(scanButton,FlowLayout.LEFT);		
 		header.add(dirNameField,FlowLayout.LEFT);
+		header.add(selectButton, FlowLayout.LEFT);
+		
 		header.add(scannedVolume, FlowLayout.RIGHT);
 		
 		dirNameField.setColumns(30);	
@@ -83,10 +133,36 @@ public class DiskAnalyzer extends JFrame
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {	
-				(new ScanThread()).start();
+				
+				if (!inProgress)
+				{
+					(new ScanThread()).start();
+				}
+				else {
+					diskTreeTable.stopScanning();
+				}
 			}
 		});
 		
+		selectButton.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {	
+				final JFileChooser chooser = new JFileChooser();	
+				
+				chooser.setCurrentDirectory(
+                        chooser.getFileSystemView().getParentDirectory(
+                            new File("C:\\")));  
+				
+			    chooser.setDialogTitle("Select folder to scan");
+			    chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+				chooser.showOpenDialog(getComponent());
+				
+				dirNameField.setText(chooser.getSelectedFile().getAbsolutePath());
+				
+			}
+		});
+			
 		//header.setBounds(new Rectangle(0,0,500,100));
 		/*
 		add( header, BorderLayout.PAGE_START);
