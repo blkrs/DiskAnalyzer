@@ -1,13 +1,10 @@
 import java.awt.BorderLayout;
-import java.awt.CardLayout;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
-import java.awt.Rectangle;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -74,10 +71,7 @@ public class DiskAnalyzer extends JFrame
 		header.add(dirNameField,FlowLayout.LEFT);
 		header.add(scannedVolume, FlowLayout.RIGHT);
 		
-		
-		
-		dirNameField.setColumns(30);
-		
+		dirNameField.setColumns(30);	
 		diskTreeTable.setVolumePanel(scannedVolume);
 		
 		
