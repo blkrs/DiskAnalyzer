@@ -6,14 +6,22 @@ class DiskNode {
 	private String description;
 	private List<DiskNode> children = new ArrayList<DiskNode>();
 	
+	DiskNode myParent;
+	
 	private long size;
 
-	public DiskNode() {
+	private DiskNode() {
 	}
 
-	public DiskNode(String name, String description) {
+	public DiskNode(String name, String description, DiskNode parent) {
 		this.name = name;
 		this.description = description;
+		this.myParent = parent;
+	}
+	
+	public DiskNode getParent()
+	{
+		return myParent;
 	}
 
 	public String getName() {

@@ -1,7 +1,10 @@
 import java.io.File;
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Deque;
+import java.util.Iterator;
 import java.util.List;
 
 import javax.swing.JLabel;
@@ -10,11 +13,12 @@ import javax.swing.tree.TreePath;
 import org.jdesktop.swingx.treetable.AbstractTreeTableModel;
 
 public class DiskTreeTable extends AbstractTreeTableModel {
+	public static final int TREE_PATH_INDEX = 3;
 	private DiskNode myroot;
 	private JLabel volumePanel;
 
 	public DiskTreeTable() {
-		myroot = new DiskNode("root", "Root of the tree");
+		myroot = new DiskNode("root", "Root of the tree",null);
 	}
 	
 	private boolean scanning = false;
@@ -24,8 +28,11 @@ public class DiskTreeTable extends AbstractTreeTableModel {
 		scanning = true;
 		this.treePath = new TreePath(myroot);
 		this.modelSupport.fireTreeStructureChanged(null);
+		
 		totalSize = 0;
 		myroot.getChildren().clear();
+		
+		
 		recursiveScan(new File(dir), myroot);
 		refreshStatus();
 	}
@@ -34,7 +41,7 @@ public class DiskTreeTable extends AbstractTreeTableModel {
 	{
 		scanning  = false;
 	}
-
+	
 	private void refreshStatus() {
 		if (this.volumePanel == null) {
 			System.out.println("Volume panel is empty");
@@ -77,13 +84,12 @@ public class DiskTreeTable extends AbstractTreeTableModel {
 		}
 		counter ++;
 			
-
 		if (file.isDirectory()) {
 			long total_size = 0;
 			String[] subDirs = file.list();
 			if (subDirs == null){ return total_size; };
 			for (String filename : subDirs) {
-				DiskNode newNode = new DiskNode(filename,"");
+				DiskNode newNode = new DiskNode(filename,"", treeNode);
 				treeNode.getChildren().add(newNode);
 				long my_size = recursiveScan(new File(file, filename), newNode);
 				newNode.setDescription(DiskSizeUtil.humanReadableSize(my_size));
@@ -134,6 +140,23 @@ public class DiskTreeTable extends AbstractTreeTableModel {
 			return treenode.getDescription();
 		case 2:
 			return treenode.getChildren().size();
+		case TREE_PATH_INDEX:
+			
+			DiskNode d = treenode;
+			Deque<String> nodes = new ArrayDeque<String>();
+			while (d != null)
+			{
+				if (d.getParent() == null) break;
+				nodes.addFirst(d.getName());
+				d= d.getParent();
+			}
+			
+			String x = "";
+			for(Iterator itr = nodes.iterator();itr.hasNext();)  {
+		        x = x + "/" + itr.next();
+		      }
+			
+			return x;
 		default:
 			return "Unknown";
 		}

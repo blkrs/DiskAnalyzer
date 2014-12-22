@@ -5,6 +5,9 @@ import java.awt.FlowLayout;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ComponentListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.File;
 
 import javax.swing.ImageIcon;
@@ -13,6 +16,7 @@ import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTabbedPane;
@@ -37,7 +41,7 @@ public class DiskAnalyzer extends JFrame
 	private JTabbedPane tabs = new JTabbedPane();
 	
 	private DiskTreeTable diskTreeTable = new DiskTreeTable();
-	private JXTreeTable treeTable = new JXTreeTable( diskTreeTable );
+	private JXTreeTable treeTableView = new JXTreeTable( diskTreeTable );
 	
 	private JButton scanButton = new JButton("Scan");
 	
@@ -71,7 +75,7 @@ public class DiskAnalyzer extends JFrame
 	    	inProgress = false;
 	    	
 	    	treeTablePanel.repaint();
-	    	treeTable.repaint();
+	    	treeTableView.repaint();
 	    	split.repaint();
 	    	
 	    	disableProgressGif();
@@ -112,7 +116,7 @@ public class DiskAnalyzer extends JFrame
 		
 		
 		// Build the tree table panel
-		treeTablePanel.add( new JScrollPane( treeTable ) );
+		treeTablePanel.add( new JScrollPane( treeTableView ) );
 		
 		tabs.addTab( "Folder tree", treeTablePanel );
 		
@@ -161,6 +165,35 @@ public class DiskAnalyzer extends JFrame
 				dirNameField.setText(chooser.getSelectedFile().getAbsolutePath());
 				
 			}
+		});
+		
+		treeTableView.addMouseListener(new MouseAdapter() {
+		    @Override
+		    public void mouseReleased(MouseEvent e) {
+		        int r = treeTableView.rowAtPoint(e.getPoint());
+		        if (r >= 0 && r < treeTableView.getRowCount()) {
+		        	treeTableView.setRowSelectionInterval(r, r);
+		        } else {
+		        	treeTableView.clearSelection();
+		        }
+
+		        int rowindex = treeTableView.getSelectedRow();
+		        if (rowindex < 0)
+		            return;
+		        
+		        if (e.isPopupTrigger() && e.getComponent() instanceof JXTreeTable ) {
+		            JPopupMenu popup = new JPopupMenu();
+		            popup.add("NEw string");
+		            try {
+						popup.add((String) treeTableView.getModel().getValueAt(r,DiskTreeTable.TREE_PATH_INDEX));
+						
+					} catch (SecurityException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+		            popup.show(e.getComponent(), e.getX(), e.getY());
+		        }
+		    }
 		});
 			
 		//header.setBounds(new Rectangle(0,0,500,100));
