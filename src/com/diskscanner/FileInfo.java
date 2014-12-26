@@ -1,3 +1,4 @@
+package com.diskscanner;
 
 public class FileInfo {
 	

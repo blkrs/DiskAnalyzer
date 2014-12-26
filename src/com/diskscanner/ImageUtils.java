@@ -1,3 +1,4 @@
+package com.diskscanner;
 import javax.swing.ImageIcon;
 
 

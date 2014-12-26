@@ -1,3 +1,4 @@
+package com.diskscanner;
 import java.io.File;
 import java.util.ArrayDeque;
 import java.util.ArrayList;

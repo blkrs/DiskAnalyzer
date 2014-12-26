@@ -16,5 +16,8 @@
 			<attribute name="maven.pomderived" value="true"/>
 		</attributes>
 	</classpathentry>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/javaws"/>
+	<classpathentry kind="lib" path="C:/Program Files/Java/jre8/lib/javaws.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

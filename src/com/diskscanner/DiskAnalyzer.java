@@ -1,3 +1,4 @@
+package com.diskscanner;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
@@ -22,6 +23,8 @@ import javax.swing.JSplitPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
+
+import javax.jnlp.*;
 
 import org.jdesktop.swingx.JXTreeTable;
 
