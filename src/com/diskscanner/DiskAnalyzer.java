@@ -52,6 +52,8 @@ public class DiskAnalyzer extends JFrame
 	
 	private JTextField dirNameField = new JTextField("C:\\");
 	
+	String currentScannedDir = "";
+	
 	private JLabel scannedVolume = new JLabel("");
 	
 	JSplitPane split = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
@@ -73,7 +75,8 @@ public class DiskAnalyzer extends JFrame
 	    	
 	    	showProgressGif();
 	    	
-	    	diskTreeTable.scanDir(dirNameField.getText());
+	    	currentScannedDir = dirNameField.getText();
+	    	diskTreeTable.scanDir(currentScannedDir);
 	    	
 	    	inProgress = false;
 	    	
@@ -185,15 +188,8 @@ public class DiskAnalyzer extends JFrame
 		            return;
 		        
 		        if (e.isPopupTrigger() && e.getComponent() instanceof JXTreeTable ) {
-		            JPopupMenu popup = new JPopupMenu();
-		            popup.add("NEw string");
-		            try {
-						popup.add((String) treeTableView.getModel().getValueAt(r,DiskTreeTable.TREE_PATH_INDEX));
-						
-					} catch (SecurityException e1) {
-						// TODO Auto-generated catch block
-						e1.printStackTrace();
-					}
+		            RightClickMenu popup = new RightClickMenu(
+		            						(String) treeTableView.getModel().getValueAt(r,DiskTreeTable.TREE_PATH_INDEX));
 		            popup.show(e.getComponent(), e.getX(), e.getY());
 		        }
 		    }

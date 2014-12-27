@@ -19,7 +19,7 @@ public class DiskTreeTable extends AbstractTreeTableModel {
 	private JLabel volumePanel;
 
 	public DiskTreeTable() {
-		myroot = new DiskNode("root", "Root of the tree",null);
+		myroot = new DiskNode("root", "Root of the tree",null, null);
 	}
 	
 	private boolean scanning = false;
@@ -90,9 +90,10 @@ public class DiskTreeTable extends AbstractTreeTableModel {
 			String[] subDirs = file.list();
 			if (subDirs == null){ return total_size; };
 			for (String filename : subDirs) {
-				DiskNode newNode = new DiskNode(filename,"", treeNode);
+				File newFile = new File(file, filename);
+				DiskNode newNode = new DiskNode(filename,"", treeNode, newFile.getAbsoluteFile().toString());
 				treeNode.getChildren().add(newNode);
-				long my_size = recursiveScan(new File(file, filename), newNode);
+				long my_size = recursiveScan(newFile, newNode);
 				newNode.setDescription(DiskSizeUtil.humanReadableSize(my_size));
 				newNode.setSize(my_size);
 				total_size += my_size;
@@ -142,22 +143,7 @@ public class DiskTreeTable extends AbstractTreeTableModel {
 		case 2:
 			return treenode.getChildren().size();
 		case TREE_PATH_INDEX:
-			
-			DiskNode d = treenode;
-			Deque<String> nodes = new ArrayDeque<String>();
-			while (d != null)
-			{
-				if (d.getParent() == null) break;
-				nodes.addFirst(d.getName());
-				d= d.getParent();
-			}
-			
-			String x = "";
-			for(Iterator itr = nodes.iterator();itr.hasNext();)  {
-		        x = x + "/" + itr.next();
-		      }
-			
-			return x;
+			return treenode.getAbsolutePath();
 		default:
 			return "Unknown";
 		}

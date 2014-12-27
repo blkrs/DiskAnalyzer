@@ -1,4 +1,5 @@
 package com.diskscanner;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,14 +11,16 @@ class DiskNode {
 	DiskNode myParent;
 	
 	private long size;
+	private String myAbsolutePath;
 
 	private DiskNode() {
 	}
 
-	public DiskNode(String name, String description, DiskNode parent) {
+	public DiskNode(String name, String description, DiskNode parent, String absolutePath) {
 		this.name = name;
 		this.description = description;
 		this.myParent = parent;
+		this.myAbsolutePath = absolutePath;
 	}
 	
 	public DiskNode getParent()
@@ -55,5 +58,10 @@ class DiskNode {
 
 	public void setSize(long size) {
 		this.size = size;
+	}
+
+	public String getAbsolutePath() {
+		// TODO Auto-generated method stub
+		return this.myAbsolutePath;
 	}
 }
