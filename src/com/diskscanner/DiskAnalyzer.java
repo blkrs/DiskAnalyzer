@@ -24,7 +24,6 @@ import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 
-import javax.jnlp.*;
 
 import org.jdesktop.swingx.JXTreeTable;
 
