@@ -2,9 +2,9 @@
 <project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <modelVersion>4.0.0</modelVersion>
-  <groupId>DirSize</groupId>
-  <artifactId>DirSize</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
+  <groupId>DiskSpaceScanner</groupId>
+  <artifactId>DiskSpaceScanner</artifactId>
+  <version>0.0.2</version>
   <build>
     <sourceDirectory>src</sourceDirectory>
     <plugins>
@@ -16,6 +16,37 @@
           <target>1.7</target>
         </configuration>
       </plugin>
+    <plugin>
+      <!-- Build an executable JAR -->
+      <groupId>org.apache.maven.plugins</groupId>
+      <artifactId>maven-jar-plugin</artifactId>
+      <version>2.4</version>
+      <configuration>
+        <archive>
+          <manifest>
+            <addClasspath>true</addClasspath>
+            <classpathPrefix>lib/</classpathPrefix>
+            <mainClass>com.diskscanner.DiskAnalyzer</mainClass>
+          </manifest>
+        </archive>
+      </configuration>
+    </plugin>
+    <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-dependency-plugin</artifactId>
+            <executions>
+                <execution>
+                    <id>copy-dependencies</id>
+                    <phase>package</phase>
+                    <goals>
+                        <goal>copy-dependencies</goal>
+                    </goals>
+                    <configuration>
+                        <useBaseVersion>false</useBaseVersion>
+                    </configuration>
+                </execution>
+            </executions>
+        </plugin>
     </plugins>
   </build>
   <dependencies>
@@ -26,3 +57,6 @@
     </dependency>
   </dependencies>
 </project>
+
+
+

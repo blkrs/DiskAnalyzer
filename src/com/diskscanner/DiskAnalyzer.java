@@ -1,5 +1,6 @@
 package com.diskscanner;
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
@@ -28,49 +29,52 @@ import javax.swing.SwingUtilities;
 import org.jdesktop.swingx.JXTreeTable;
 
 
-/*
- * http://www.informit.com/guides/content.aspx?g=java&seqNum=528
- */
-
-
-
 public class DiskAnalyzer extends JFrame 
 {
+	// 
+	//73B2E8
+	private static final Color SCAN_BUTTON_COLOR = new Color(0x73,0xb2,0xe8);
+	// 98FFD5
+	private static final Color HEADER_BG_COLOR = new Color(0x98,0xFF,0xD5);
+	// B6B2E8
+	private static final Color CHOOSE_BUTTON_COLOR = new Color(0xb6,0xb2,0xe8);
+	
+	// E8674A
+	private static final Color STOP_BUTTON_COLOR = new Color(0xe8,0x67,0x4A);
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -2129525315141277648L;
-
-	private JTabbedPane tabs = new JTabbedPane();
 	
+	private static final String STOP_BUTTON_ACTIVE = "Stop scanning";
+	private static final String SCAN_BUTTON_ACTIVE = "Scan selected folder";
+	private static final long serialVersionUID = -2129525315141277648L;
+	private JTabbedPane tabs = new JTabbedPane();
 	private DiskTreeTable diskTreeTable = new DiskTreeTable();
 	private JXTreeTable treeTableView = new JXTreeTable( diskTreeTable );
-	
-	private JButton scanButton = new JButton("Scan");
-	
+	private JButton scanButton = new JButton(DiskAnalyzer.SCAN_BUTTON_ACTIVE);
 	private JButton selectButton = new JButton("Choose folder");
-	
 	private JTextField dirNameField = new JTextField("C:\\");
-	
 	String currentScannedDir = "";
+    
 	
 	private JLabel scannedVolume = new JLabel("");
-	
 	JSplitPane split = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
 	
 	JPanel treeTablePanel = new JPanel( new BorderLayout() );
 	
 	private boolean inProgress = false;
-	
 	JPanel header = null;
-	
 	JLabel progressLbl = null;
+	JPanel helpPanel = null;
 	
 	public class ScanThread extends Thread {
 
-	    public void run() {
+	
+
+		public void run() {
 	    	
-	    	scanButton.setText("Stop");
+	    	scanButton.setText(STOP_BUTTON_ACTIVE);
+	    	scanButton.setBackground(STOP_BUTTON_COLOR);
 	    	inProgress = true;
 	    	
 	    	showProgressGif();
@@ -86,7 +90,8 @@ public class DiskAnalyzer extends JFrame
 	    	
 	    	disableProgressGif();
 	    	
-	    	scanButton.setText("Scan");
+	    	scanButton.setText(SCAN_BUTTON_ACTIVE);
+	    	scanButton.setBackground(SCAN_BUTTON_COLOR);
 	    }
 	}
 	
@@ -109,14 +114,14 @@ public class DiskAnalyzer extends JFrame
 
 	public DiskAnalyzer()
 	{
-		super( "Disk space analyzer" );
-		
-		
-		
+		super( "Disk Space Scanner" );		
 		header = new JPanel(new FlowLayout());
+		header.setBackground(HEADER_BG_COLOR);
+		scanButton.setBackground(SCAN_BUTTON_COLOR);
+		selectButton.setBackground(CHOOSE_BUTTON_COLOR);
 		
 		ImageUtils imgUtils = new ImageUtils();
-		ImageIcon progressIcon = imgUtils.createImageIcon("scan_in_progress.gif","Disk scan in progress");
+		ImageIcon progressIcon = imgUtils.createImageIcon("scan_in_progress.gif", "Disk scan in progress");
 		
 		progressLbl = new JLabel(progressIcon);
 		
@@ -125,14 +130,18 @@ public class DiskAnalyzer extends JFrame
 		treeTablePanel.add( new JScrollPane( treeTableView ) );
 		
 		tabs.addTab( "Folder tree", treeTablePanel );
-		
-		
+
 		
 		header.add(scanButton,FlowLayout.LEFT);		
 		header.add(dirNameField,FlowLayout.LEFT);
 		header.add(selectButton, FlowLayout.LEFT);
 		
 		header.add(scannedVolume, FlowLayout.RIGHT);
+		
+		this.helpPanel = new JPanel(new FlowLayout());
+		
+		this.helpPanel.add(new JLabel("This simple utility will scan your folder or entire drive in order to show summary disk space for each file and folder")
+				,FlowLayout.LEFT);
 		
 		dirNameField.setColumns(30);	
 		diskTreeTable.setVolumePanel(scannedVolume);

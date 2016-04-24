@@ -76,7 +76,7 @@ public class DiskTreeTable extends AbstractTreeTableModel {
 		
 		if (!scanning) return 0;
 
-		System.out.println(file.getAbsoluteFile());
+		//System.out.println(file.getAbsoluteFile());
 		
 		if (counter > 100)
 		{
