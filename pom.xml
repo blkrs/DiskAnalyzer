@@ -4,7 +4,27 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>DiskSpaceScanner</groupId>
   <artifactId>DiskSpaceScanner</artifactId>
-  <version>0.0.2</version>
+  <version>0.0.3</version>
+    <dependencies>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>1.16.8</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.swinglabs</groupId>
+            <artifactId>swingx</artifactId>
+            <version>1.6</version>
+        </dependency>
+        <!-- http://mvnrepository.com/artifact/commons-codec/commons-codec -->
+        <dependency>
+            <groupId>commons-codec</groupId>
+            <artifactId>commons-codec</artifactId>
+            <version>1.4</version>
+        </dependency>
+
+    </dependencies>
   <build>
     <sourceDirectory>src</sourceDirectory>
     <plugins>
@@ -47,15 +67,23 @@
                 </execution>
             </executions>
         </plugin>
+
+              <plugin>
+                  <artifactId>maven-assembly-plugin</artifactId>
+                  <configuration>
+                      <archive>
+                          <manifest>
+                              <mainClass>com.diskscanner.DiskAnalyzer</mainClass>
+                          </manifest>
+                      </archive>
+                      <descriptorRefs>
+                          <descriptorRef>jar-with-dependencies</descriptorRef>
+                      </descriptorRefs>
+                  </configuration>
+              </plugin>
     </plugins>
   </build>
-  <dependencies>
-    <dependency>
-      <groupId>org.swinglabs</groupId>
-      <artifactId>swingx</artifactId>
-      <version>1.6</version>
-    </dependency>
-  </dependencies>
+
 </project>
 
 
