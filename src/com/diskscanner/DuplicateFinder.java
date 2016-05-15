@@ -45,10 +45,10 @@ public class DuplicateFinder {
             for (String filePath1 : totalMap.get(info)) {
                 try {
                     checkFile(info, filePath1);
+                    processed.add(filePath1);
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    System.out.println("Cannot read file: " + filePath1);
                 }
-                processed.add(filePath1);
             }
         }
         System.out.println("Total redundant space: " + duplicatedSpace + " bytes");
