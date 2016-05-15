@@ -105,7 +105,7 @@ public class DiskTreeTable extends AbstractTreeTableModel {
 		}
 		else 
 			{
-				DuplicateFinder.getInstance().insert(new FileInfo(file.length(),file.lastModified()),file.getAbsolutePath());
+				DuplicateFinder.getInstance().insert(new FileInfo(file.length()),file.getAbsolutePath());
 				totalSize += file.length();
 				return file.length();
 			}
@@ -170,8 +170,6 @@ public class DiskTreeTable extends AbstractTreeTableModel {
 				return i;
 			}
 		}
-
-		// TODO Auto-generated method stub
 		return 0;
 	}
 
