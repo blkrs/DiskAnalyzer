@@ -31,6 +31,7 @@ public class DuplicateFinder {
     }
 
     public void insert(FileInfo info, String node) {
+        if ( info.getSize() < 1000*1000 ) return;
         if (totalMap.get(info) == null) {
             totalMap.put(info, new ArrayList<String>());
             totalMap.get(info).add(node);
