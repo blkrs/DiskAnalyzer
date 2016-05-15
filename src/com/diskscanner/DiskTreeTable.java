@@ -105,6 +105,7 @@ public class DiskTreeTable extends AbstractTreeTableModel {
 		}
 		else 
 			{
+				DuplicateFinder.getInstance().insert(new FileInfo(file.length(),file.lastModified()),file.getAbsolutePath());
 				totalSize += file.length();
 				return file.length();
 			}

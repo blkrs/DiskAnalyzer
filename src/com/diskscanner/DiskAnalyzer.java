@@ -69,8 +69,6 @@ public class DiskAnalyzer extends JFrame
 	
 	public class ScanThread extends Thread {
 
-	
-
 		public void run() {
 	    	
 	    	scanButton.setText(STOP_BUTTON_ACTIVE);
@@ -92,6 +90,9 @@ public class DiskAnalyzer extends JFrame
 	    	
 	    	scanButton.setText(SCAN_BUTTON_ACTIVE);
 	    	scanButton.setBackground(SCAN_BUTTON_COLOR);
+
+			DuplicateFinder.getInstance().countDuplicates();
+			DuplicateFinder.getInstance().clear();
 	    }
 	}
 	
