@@ -10,15 +10,22 @@ class DiskNode {
 	private String description;
 	private List<DiskNode> children = new ArrayList<DiskNode>();
 	private DiskNode myParent;
-	private long size;
+	private long size = 0;
 	private String absolutePath;
-
 
 	private DiskNode(String name, String description, DiskNode parent, String absolutePath) {
 		this.name = name;
 		this.description = description;
 		this.myParent = parent;
 		this.absolutePath = absolutePath;
+	}
+
+	public void increaseSize(long addedSize) {
+		this.size += addedSize;
+		setDescription(DiskSizeUtil.humanReadableSize(this.size));
+		if (myParent != null) {
+			myParent.increaseSize(addedSize);
+		}
 	}
 
 	public String toString() {
