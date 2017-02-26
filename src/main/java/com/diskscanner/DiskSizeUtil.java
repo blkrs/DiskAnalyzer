@@ -2,6 +2,8 @@ package com.diskscanner;
 
 public class DiskSizeUtil {
 	
+	private static int precision = 10;
+	
 	private static final long KILO = 1024;
 	private static final long MEGA = KILO * KILO;
 	private static final long GIGA = MEGA * KILO;
@@ -13,16 +15,16 @@ public class DiskSizeUtil {
 			txt = my_size + " bytes";
 		}
 		else if (my_size < MEGA) {
-			txt = (long)(my_size/ KILO) + "KB";
+			txt = (float)((long)precision*my_size/KILO)/precision + "KB";
 		}
 		else if (my_size < GIGA) {
-			txt = (long)(my_size/ MEGA) + "MB";
+			txt = (float)((long)precision*my_size/MEGA)/precision + "MB";
 		}
 		else if (my_size < TERA) {
-			txt = (long)(my_size/ GIGA) + "GB";
+			txt = (float)((long)precision*my_size/GIGA)/precision + "GB";
 		}
 		else {
-			txt = (long)(my_size/TERA) + "TB";
+			txt = (long)((long)precision*my_size/TERA)/precision + "TB";
 		}
 		return txt;
 	}
