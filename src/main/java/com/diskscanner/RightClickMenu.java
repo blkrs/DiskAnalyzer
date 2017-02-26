@@ -16,8 +16,8 @@ public class RightClickMenu {
 	
 	String filePath = null;
 	
-	public RightClickMenu(final String filePath)
-	{
+	public RightClickMenu(final String filePath)  {
+		System.out.println("Creating right click menu");
 		this.filePath = filePath;
 		popup = new JPopupMenu();
 		JMenuItem menuItemOpen = new JMenuItem("Open " + filePath);
@@ -38,7 +38,6 @@ public class RightClickMenu {
 		popup.add(menuItemDelete);
 		
 		menuItemDelete.addActionListener(new ActionListener(){
-
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				new File(filePath).delete();

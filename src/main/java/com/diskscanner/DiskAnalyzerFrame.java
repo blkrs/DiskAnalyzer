@@ -1,21 +1,15 @@
 package com.diskscanner;
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Dimension;
-import java.awt.FlowLayout;
-import java.awt.Toolkit;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import com.diskscanner.duplicates.DuplicateFinder;
+import org.jdesktop.swingx.JXTreeTable;
+
+import javax.swing.*;
+import javax.swing.event.TreeExpansionEvent;
+import javax.swing.event.TreeExpansionListener;
+import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
-
-import javax.swing.*;
-
-
-import com.diskscanner.duplicates.DuplicateFinder;
-import org.jdesktop.swingx.JXTreeTable;
+import java.util.Collections;
 
 
 public class DiskAnalyzerFrame extends JFrame {
@@ -95,12 +89,10 @@ public class DiskAnalyzerFrame extends JFrame {
 	{
 		return this;
 	}
-	
-	
+
 	private void disableProgressGif() {
 		header.remove(progressLbl);
 	}
-
 
 	private void showProgressGif() {
 		
@@ -112,7 +104,6 @@ public class DiskAnalyzerFrame extends JFrame {
 		header.setBackground(HEADER_BG_COLOR);
 		scanButton.setBackground(SCAN_BUTTON_COLOR);
 		selectButton.setBackground(CHOOSE_BUTTON_COLOR);
-		ClassLoader classLoader = getClass().getClassLoader();
 
 		ImageUtils imgUtils = new ImageUtils();
 		ImageIcon progressIcon = imgUtils.createImageIcon("scan_in_progress.gif",
@@ -154,43 +145,31 @@ public class DiskAnalyzerFrame extends JFrame {
 	}
 
 	private void setupActionListeners() {
-		scanButton.addActionListener(new ActionListener() {
-
-			@Override
-			public void actionPerformed(ActionEvent e) {
-
-				if (!inProgress)
-				{
+		scanButton.addActionListener((e) -> {
+				if (!inProgress) {
 					(new ScanThread()).start();
-				}
-				else {
+				} else {
 					diskTreeTable.stopScanning();
 				}
 			}
-		});
+		);
 
-		selectButton.addActionListener(new ActionListener() {
-
-			@Override
-			public void actionPerformed(ActionEvent e) {
+		selectButton.addActionListener((e) ->{
 				final JFileChooser chooser = new JFileChooser();
-
 				chooser.setCurrentDirectory(
                         chooser.getFileSystemView().getParentDirectory(
                             new File(DEFAULT_SCAN_PATH)));
-
 			    chooser.setDialogTitle(SELECT_FOLDER_TO_SCAN_LABEL);
 			    chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 				chooser.showOpenDialog(getComponent());
-
 				dirNameField.setText(chooser.getSelectedFile().getAbsolutePath());
-
 			}
-		});
+		);
 
 		treeTableView.addMouseListener(new MouseAdapter() {
 		    @Override
 		    public void mouseReleased(MouseEvent e) {
+		    	System.out.println("Mouse released");
 		        int row = treeTableView.rowAtPoint(e.getPoint());
 		        if (row >= 0 && row < treeTableView.getRowCount()) {
 		        	treeTableView.setRowSelectionInterval(row, row);
@@ -207,6 +186,26 @@ public class DiskAnalyzerFrame extends JFrame {
 		        }
 		    }
 		});
+
+        treeTableView.setSortable(true);
+        treeTableView.setAutoCreateRowSorter(true);
+
+
+
+        treeTableView.addTreeExpansionListener(new TreeExpansionListener() {
+            @Override
+            public void treeExpanded(TreeExpansionEvent event) {
+                treeTableView.getModel();
+                DiskNode node = (DiskNode) event.getPath().getLastPathComponent();
+                System.out.println("Just clicked on node " + node.toString() + " sorting childreen");
+                Collections.sort(node.getChildren(), DiskNode.getComparator());
+                diskTreeTable.refreshView(event.getPath());
+            }
+
+            @Override
+            public void treeCollapsed(TreeExpansionEvent event) {
+            }
+        });
 	}
 }
 

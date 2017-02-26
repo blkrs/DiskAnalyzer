@@ -51,6 +51,7 @@ public class DuplicateFinder {
             }
         }
         System.out.println("Total redundant space: " + DiskSizeUtil.humanReadableSize(duplicatedSpace) + " bytes");
+        clear();
     }
 
     public void clear() {
