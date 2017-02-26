@@ -30,7 +30,6 @@ public class RightClickMenu {
 				try {
 					Desktop.getDesktop().open(new File(fileName));
 				} catch (IOException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			}});

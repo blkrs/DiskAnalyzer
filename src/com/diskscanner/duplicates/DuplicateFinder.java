@@ -1,10 +1,7 @@
-package com.diskscanner;
-
-import lombok.Getter;
+package com.diskscanner.duplicates;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
@@ -14,13 +11,12 @@ import java.util.*;
  * Created by krzych on 15.05.16.
  */
 public class DuplicateFinder {
-
+    private static final int LARGE_FILE_SIZE = 1000000;
     private static DuplicateFinder _instance = null;
     private long duplicatedSpace = 0;
-    Map<FileInfo, List<String>> totalMap = new HashMap<>();
-    Set<FileInfo> duplicates = new HashSet<>();
-    Set<String> processed = new HashSet<>();
-
+    private Map<FileInfo, List<String>> allFiles = new HashMap<>();
+    private Set<FileInfo> potentialDuplicates = new HashSet<>();
+    private Set<String> processed = new HashSet<>();
     private DuplicateFinder() {};
 
     public static DuplicateFinder getInstance() {
@@ -31,19 +27,19 @@ public class DuplicateFinder {
     }
 
     public void insert(FileInfo info, String node) {
-        if ( info.getSize() < 1000*1000 ) return;
-        if (totalMap.get(info) == null) {
-            totalMap.put(info, new ArrayList<String>());
-            totalMap.get(info).add(node);
+        if ( info.getSize() < LARGE_FILE_SIZE ) return;
+        if (allFiles.get(info) == null) {
+            allFiles.put(info, new ArrayList<String>());
+            allFiles.get(info).add(node);
         } else {
-            totalMap.get(info).add(node);
-            duplicates.add(info);
+            allFiles.get(info).add(node);
+            potentialDuplicates.add(info);
         }
     }
 
     public void countDuplicates() {
-        for (FileInfo info : duplicates) {
-            for (String filePath1 : totalMap.get(info)) {
+        for (FileInfo info : potentialDuplicates) {
+            for (String filePath1 : allFiles.get(info)) {
                 try {
                     checkFile(info, filePath1);
                     processed.add(filePath1);
@@ -55,20 +51,26 @@ public class DuplicateFinder {
         System.out.println("Total redundant space: " + duplicatedSpace + " bytes");
     }
 
+    public void clear() {
+        processed.clear();
+        potentialDuplicates.clear();
+        allFiles.clear();
+        duplicatedSpace = 0;
+    }
+
     private void checkFile(FileInfo info, String filePath1) throws IOException {
         //System.out.println("Checking file: " + filePath1);
-        for (String filePath2 : totalMap.get(info)) {
+        for (String filePath2 : allFiles.get(info)) {
             if (processed.contains(filePath2)) continue;
             if (!filePath1.equals(filePath2)  &&
                     (quickSum(filePath1) == quickSum(filePath2)) &&
             (md5(filePath1).equals(md5(filePath2)))) {
                 duplicatedSpace += info.getSize();
-                if (info.getSize() > 1000000) {
+                if (info.getSize() > LARGE_FILE_SIZE) {
                     System.out.println("Duplicate files: " + filePath1 + " ," + filePath2);
                 }
             }
          }
-
     }
 
 
@@ -91,11 +93,6 @@ public class DuplicateFinder {
         return qsum;
     }
 
-    public void clear() {
-        processed.clear();
-        duplicates.clear();
-        totalMap.clear();
-        duplicatedSpace = 0;
-    }
+
 
 }

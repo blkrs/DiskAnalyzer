@@ -1,4 +1,4 @@
-package com.diskscanner;
+package com.diskscanner.duplicates;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
