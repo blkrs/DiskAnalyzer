@@ -1,40 +1,47 @@
 package com.diskscanner;
 import java.io.File;
-import java.util.ArrayDeque;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Deque;
-import java.util.Iterator;
-import java.util.List;
 
 import javax.swing.JLabel;
 import javax.swing.tree.TreePath;
 
+import com.diskscanner.duplicates.DuplicateFinder;
+import com.diskscanner.duplicates.FileInfo;
 import org.jdesktop.swingx.treetable.AbstractTreeTableModel;
 
 public class DiskTreeTable extends AbstractTreeTableModel {
 	public static final int TREE_PATH_INDEX = 3;
-	private DiskNode myroot;
+	private DiskNode rootNode;
 	private JLabel volumePanel;
+	private boolean scanning = false;
+	private long totalSize = 0;
+	private int counter = 0;
+
+	private TreePath treePath = null;
 
 	public DiskTreeTable() {
-		myroot = new DiskNode("root", "Root of the tree",null, null);
+
 	}
-	
-	private boolean scanning = false;
 	
 	public void scanDir(String dir)
 	{
 		scanning = true;
-		this.treePath = new TreePath(myroot);
+
+		rootNode = new DiskNode.Builder().setName("root")
+					.setDescription("Root of the tree")
+					.setParent(null)
+					.setAbsolutePath(dir)
+					.build();
+
+		this.treePath = new TreePath(rootNode);
 		this.modelSupport.fireTreeStructureChanged(null);
 		
 		totalSize = 0;
-		myroot.getChildren().clear();
+		rootNode.getChildren().clear();
 		
 		
-		recursiveScan(new File(dir), myroot);
+		recursiveScan(new File(dir), rootNode);
 		refreshStatus();
 	}
 	
@@ -58,10 +65,7 @@ public class DiskTreeTable extends AbstractTreeTableModel {
 		}
 	}
 
-	long totalSize = 0;
-	int counter = 0;
-	
-	TreePath treePath = null;
+
 	
 	public class NodeComparator implements Comparator<DiskNode> {
 		@Override
@@ -73,34 +77,32 @@ public class DiskTreeTable extends AbstractTreeTableModel {
 	}
 	
 	public long recursiveScan(File file, DiskNode treeNode) {
-		
 		if (!scanning) return 0;
-
 		//System.out.println(file.getAbsoluteFile());
-		
 		if (counter > 100)
 		{
 			counter = 0;
 			refreshStatus();
 		}
 		counter ++;
-			
 		if (file.isDirectory()) {
 			long total_size = 0;
 			String[] subDirs = file.list();
 			if (subDirs == null){ return total_size; };
-			for (String filename : subDirs) {
-				File newFile = new File(file, filename);
-				DiskNode newNode = new DiskNode(filename,"", treeNode, newFile.getAbsoluteFile().toString());
+			for (String fileName : subDirs) {
+				File newFile = new File(file, fileName);
+				DiskNode newNode = new DiskNode.Builder()
+						             .setName(fileName)
+									.setParent(treeNode)
+									.setAbsolutePath(newFile.getAbsoluteFile().toString())
+						            .build();
 				treeNode.getChildren().add(newNode);
 				long my_size = recursiveScan(newFile, newNode);
 				newNode.setDescription(DiskSizeUtil.humanReadableSize(my_size));
 				newNode.setSize(my_size);
 				total_size += my_size;
 			}
-			
 			Collections.sort(treeNode.getChildren(), new NodeComparator());
-
 			return total_size;
 		}
 		else 
@@ -183,7 +185,7 @@ public class DiskTreeTable extends AbstractTreeTableModel {
 
 	@Override
 	public Object getRoot() {
-		return myroot;
+		return rootNode;
 	}
 
 	public void setVolumePanel(JLabel scannedVolume) {

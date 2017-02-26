@@ -1,67 +1,64 @@
 package com.diskscanner;
-import java.io.File;
+import lombok.Data;
+
 import java.util.ArrayList;
 import java.util.List;
 
+@Data
 class DiskNode {
 	private String name;
 	private String description;
 	private List<DiskNode> children = new ArrayList<DiskNode>();
-	
-	DiskNode myParent;
-	
+	private DiskNode myParent;
 	private long size;
-	private String myAbsolutePath;
+	private String absolutePath;
 
-	private DiskNode() {
-	}
 
-	public DiskNode(String name, String description, DiskNode parent, String absolutePath) {
+	private DiskNode(String name, String description, DiskNode parent, String absolutePath) {
 		this.name = name;
 		this.description = description;
 		this.myParent = parent;
-		this.myAbsolutePath = absolutePath;
-	}
-	
-	public DiskNode getParent()
-	{
-		return myParent;
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	public String getDescription() {
-		return description;
-	}
-
-	public void setDescription(String description) {
-		this.description = description;
-	}
-
-	public List<DiskNode> getChildren() {
-		return children;
+		this.absolutePath = absolutePath;
 	}
 
 	public String toString() {
 		return "MyTreeNode: " + name + ", " + description;
 	}
 
-	public long getSize() {
-		return size;
+	@Override
+	public int hashCode() {
+		return absolutePath.hashCode();
 	}
 
-	public void setSize(long size) {
-		this.size = size;
+	public static class Builder {
+		private String name;
+		private String description;
+		private DiskNode parent;
+		private String absolutePath;
+
+		public DiskNode build() {
+			return new DiskNode(name,description,parent,absolutePath);
+		}
+
+		public Builder setName(String name) {
+			this.name = name;
+			return this;
+		}
+
+		public Builder setDescription(String description) {
+			this.description = description;
+			return this;
+		}
+
+		public Builder setParent(DiskNode parent) {
+			this.parent = parent;
+			return this;
+		}
+
+		public Builder setAbsolutePath(String path) {
+			this.absolutePath = path;
+			return this;
+		}
 	}
 
-	public String getAbsolutePath() {
-		// TODO Auto-generated method stub
-		return this.myAbsolutePath;
-	}
 }
