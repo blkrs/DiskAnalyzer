@@ -16,11 +16,11 @@ public class RightClickMenu {
 	
 	String filePath = null;
 	
-	public RightClickMenu(final String fileName)
+	public RightClickMenu(final String filePath)
 	{
-		filePath = fileName;
+		this.filePath = filePath;
 		popup = new JPopupMenu();
-		JMenuItem menuItemOpen = new JMenuItem("Open " + fileName);
+		JMenuItem menuItemOpen = new JMenuItem("Open " + filePath);
 		popup.add(menuItemOpen);
 		
 		menuItemOpen.addActionListener(new ActionListener(){
@@ -28,20 +28,20 @@ public class RightClickMenu {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				try {
-					Desktop.getDesktop().open(new File(fileName));
+					Desktop.getDesktop().open(new File(filePath));
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
 			}});
 		
-		JMenuItem menuItemDelete = new JMenuItem("Remove " + fileName);
+		JMenuItem menuItemDelete = new JMenuItem("Remove " + filePath);
 		popup.add(menuItemDelete);
 		
 		menuItemDelete.addActionListener(new ActionListener(){
 
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				new File(fileName).delete();
+				new File(filePath).delete();
 			}});
 		
 	}

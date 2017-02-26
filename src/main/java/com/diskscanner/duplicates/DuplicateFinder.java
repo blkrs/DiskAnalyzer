@@ -1,5 +1,7 @@
 package com.diskscanner.duplicates;
 
+import com.diskscanner.DiskSizeUtil;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -48,7 +50,7 @@ public class DuplicateFinder {
                 }
             }
         }
-        System.out.println("Total redundant space: " + duplicatedSpace + " bytes");
+        System.out.println("Total redundant space: " + DiskSizeUtil.humanReadableSize(duplicatedSpace) + " bytes");
     }
 
     public void clear() {
