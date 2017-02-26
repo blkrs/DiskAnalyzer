@@ -19,25 +19,27 @@ import org.jdesktop.swingx.JXTreeTable;
 
 
 public class DiskAnalyzerFrame extends JFrame {
-	// 
+	//
 	//73B2E8
 	private static final Color SCAN_BUTTON_COLOR = new Color(0x73,0xb2,0xe8);
 	// 98FFD5
-	private static final Color HEADER_BG_COLOR = new Color(0x98,0xFF,0xD5);
+	private static final Color HEADER_BG_COLOR = new Color(0x18,0x03,0x23);
 	// B6B2E8
 	private static final Color CHOOSE_BUTTON_COLOR = new Color(0xb6,0xb2,0xe8);
 	// E8674A
 	private static final Color STOP_BUTTON_COLOR = new Color(0xe8,0x67,0x4A);
 
 	private static final String STOP_BUTTON_ACTIVE = "Stop scanning";
-	private static final String SCAN_BUTTON_ACTIVE = "Scan selected folder";
+	private static final String SCAN_BUTTON_ACTIVE = "Scan";
 	private static final long serialVersionUID = -2129525315141277648L;
+	public static final String SELECT_FOLDER_TO_SCAN_LABEL = "Select folder to scan";
+	public static final String DEFAULT_SCAN_PATH = "C:\\";
 	private JTabbedPane tabs = new JTabbedPane();
 	private DiskTreeTable diskTreeTable = new DiskTreeTable();
 	private JXTreeTable treeTableView = new JXTreeTable( diskTreeTable );
 	private JButton scanButton = new JButton(DiskAnalyzerFrame.SCAN_BUTTON_ACTIVE);
 	private JButton selectButton = new JButton("Choose folder");
-	private JTextField dirNameField = new JTextField("C:\\");
+	private JTextField dirNameField = new JTextField(DEFAULT_SCAN_PATH);
 	private String currentScannedDir = "";
 	private JLabel scannedVolume = new JLabel("");
 	private JSplitPane split = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
@@ -110,9 +112,11 @@ public class DiskAnalyzerFrame extends JFrame {
 		header.setBackground(HEADER_BG_COLOR);
 		scanButton.setBackground(SCAN_BUTTON_COLOR);
 		selectButton.setBackground(CHOOSE_BUTTON_COLOR);
+		ClassLoader classLoader = getClass().getClassLoader();
 
 		ImageUtils imgUtils = new ImageUtils();
-		ImageIcon progressIcon = imgUtils.createImageIcon("scan_in_progress.gif", "Disk scan in progress");
+		ImageIcon progressIcon = imgUtils.createImageIcon("scan_in_progress.gif",
+                    "Disk scan in progress");
 
 		progressLbl = new JLabel(progressIcon);
 
@@ -173,9 +177,9 @@ public class DiskAnalyzerFrame extends JFrame {
 
 				chooser.setCurrentDirectory(
                         chooser.getFileSystemView().getParentDirectory(
-                            new File("C:\\")));
+                            new File(DEFAULT_SCAN_PATH)));
 
-			    chooser.setDialogTitle("Select folder to scan");
+			    chooser.setDialogTitle(SELECT_FOLDER_TO_SCAN_LABEL);
 			    chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 				chooser.showOpenDialog(getComponent());
 

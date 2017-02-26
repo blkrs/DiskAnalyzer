@@ -5,14 +5,8 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>DiskSpaceScanner</groupId>
     <artifactId>DiskSpaceScanner</artifactId>
-    <version>0.0.4</version>
+    <version>0.0.5</version>
     <dependencies>
-        <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-            <version>1.16.8</version>
-            <scope>provided</scope>
-        </dependency>
         <dependency>
             <groupId>org.swinglabs</groupId>
             <artifactId>swingx</artifactId>
@@ -32,7 +26,7 @@
         </dependency>
     </dependencies>
     <build>
-        <sourceDirectory>src</sourceDirectory>
+        <sourceDirectory>src/main/java</sourceDirectory>
         <plugins>
             <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>

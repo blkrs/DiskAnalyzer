@@ -11,8 +11,7 @@ public class HeaderPanel extends JPanel {
 	private Image img = null;
 
 	public HeaderPanel(LayoutManager l) {
-
-		this(new ImageIcon("C:/gradient.png").getImage(), l);
+		this(ImageUtils.createImageIcon("gradient.png", "Gradient").getImage(), l);
 	}
 
 	public HeaderPanel(String img, LayoutManager l) {
