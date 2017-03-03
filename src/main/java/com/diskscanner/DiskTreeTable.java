@@ -2,8 +2,6 @@ package com.diskscanner;
 import org.jdesktop.swingx.treetable.AbstractTreeTableModel;
 
 import javax.swing.*;
-import javax.swing.event.TreeModelEvent;
-import javax.swing.event.TreeModelListener;
 import javax.swing.tree.TreePath;
 
 public class DiskTreeTable extends AbstractTreeTableModel {

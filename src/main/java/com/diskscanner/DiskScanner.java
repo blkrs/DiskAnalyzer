@@ -38,9 +38,9 @@ public class DiskScanner {
             DiskNode currentNode = filesToScan.remove(0);
             File file = new File(currentNode.getAbsolutePath());
             if (file.isDirectory()) {
-                String[] subDirs = file.list();
-                if (subDirs != null) {
-                    Arrays.stream(subDirs).forEach( (fileName) -> {
+                String[] files = file.list();
+                if (files != null) {
+                    Arrays.stream(files).forEach( (fileName) -> {
                         File fileInFolder = new File(file, fileName);
                         DiskNode newNode = new DiskNode.Builder()
                                 .setName(fileName)

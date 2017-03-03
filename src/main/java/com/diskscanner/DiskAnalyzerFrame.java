@@ -190,8 +190,6 @@ public class DiskAnalyzerFrame extends JFrame {
         treeTableView.setSortable(true);
         treeTableView.setAutoCreateRowSorter(true);
 
-
-
         treeTableView.addTreeExpansionListener(new TreeExpansionListener() {
             @Override
             public void treeExpanded(TreeExpansionEvent event) {

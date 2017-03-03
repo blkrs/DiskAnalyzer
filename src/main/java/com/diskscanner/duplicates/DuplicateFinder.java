@@ -31,7 +31,7 @@ public class DuplicateFinder {
     public void insert(FileInfo info, String node) {
         if ( info.getSize() < LARGE_FILE_SIZE ) return;
         if (allFiles.get(info) == null) {
-            allFiles.put(info, new ArrayList<String>());
+            allFiles.put(info, new ArrayList<>());
             allFiles.get(info).add(node);
         } else {
             allFiles.get(info).add(node);
