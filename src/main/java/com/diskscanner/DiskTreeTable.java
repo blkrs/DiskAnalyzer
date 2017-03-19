@@ -9,7 +9,7 @@ public class DiskTreeTable extends AbstractTreeTableModel {
 	private DiskNode rootNode;
 	private JLabel volumePanel;
 
-	private TreePath treePath = null;
+	private TreePath diskTree = null;
 
     private DiskScanner scanner;
 
@@ -23,14 +23,14 @@ public class DiskTreeTable extends AbstractTreeTableModel {
                 .setParent(null)
                 .setAbsolutePath(dir)
                 .build();
-        this.treePath = new TreePath(rootNode);
+        this.diskTree = new TreePath(rootNode);
         this.modelSupport.fireTreeStructureChanged(null);
         rootNode.getChildren().clear();
         scanner.nonRecursiveScan(rootNode);
     }
 
 	public void stopScanning() {
-	    scanner.stop();
+		scanner.stop();
 	}
 
 	public void refreshView(TreePath treePath) {
@@ -44,7 +44,7 @@ public class DiskTreeTable extends AbstractTreeTableModel {
 		}
 		this.volumePanel.setText("Scanned volume: " + DiskSizeUtil.humanReadableSize(scannedVolume));
 		try {
-		    refreshView(treePath);
+		    refreshView(diskTree);
 		}
 		catch (ArrayIndexOutOfBoundsException e){
 			e.printStackTrace();
