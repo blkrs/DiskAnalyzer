@@ -135,10 +135,10 @@ public class DiskAnalyzerFrame extends JFrame {
 
 		add( split );
 
-		setSize( 1024, 768 );
+		super.setSize( 1024, 768 );
 		Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
 
-        // magic numbers - dont' ask ;)
+        // magic numbers - just take it easy
 		setLocation( d.width / 2 - 512, d.height/2 - 384 );
 		setVisible( true );
 		setDefaultCloseOperation( WindowConstants.EXIT_ON_CLOSE );
